@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.env
+.DS_Store
+
+# Local documents / generated indexes
+data/documents/*
+!data/documents/.gitkeep
+*.faiss
+*.index

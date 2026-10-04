@@ -1,0 +1,9 @@
+pymupdf
+langchain-core
+langchain-text-splitters
+sentence-transformers
+faiss-cpu
+ollama
+numpy
+jupyter
+ipykernel
