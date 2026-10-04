@@ -26,16 +26,40 @@ Qwen3:4B through Ollama
 Grounded answer + source pages
 ```
 
+## Demo
+
+The complete pipeline runs locally: document retrieval is performed with FAISS and answer generation uses Qwen3:4B through Ollama.
+
+### Semantic Retrieval with FAISS
+
+The user question is embedded and compared with the document chunks stored in the FAISS vector index.
+
+The system retrieves the most relevant passage together with its page number and similarity score.
+
+![FAISS semantic retrieval](assets/screenshots/faiss-retrieval.png)
+
+### Local LLM with Ollama
+
+Qwen3:4B runs locally through Ollama, so generation does not require a cloud LLM API.
+
+![Local Qwen3 4B with Ollama](assets/screenshots/local-qwen-ollama.png)
+
+### Final RAG Answer
+
+The retrieved document context is passed to the local LLM to generate a grounded answer.
+
+![Final RAG answer](assets/screenshots/rag-final-answer.png)
+
 ## What the project demonstrates
 
 - PDF ingestion and page-level metadata
-- recursive text chunking with overlap
-- local sentence embeddings
-- semantic similarity search
+- Recursive text chunking with overlap
+- Local sentence embeddings
+- Semantic similarity search
 - FAISS nearest-neighbor retrieval
 - Retrieval-Augmented Generation
-- local LLM inference with Ollama
-- source/page tracking for retrieved evidence
+- Local LLM inference with Ollama
+- Source/page tracking for retrieved evidence
 
 ## Technologies
 
@@ -50,10 +74,15 @@ Grounded answer + source pages
 | LLM runtime | Ollama |
 | Experimentation | Jupyter Notebook |
 
-## Project structure
+## Project Structure
 
 ```text
 simple-rag-llm-document-reading-information-retrieval/
+├── assets/
+│   └── screenshots/
+│       ├── faiss-retrieval.png
+│       ├── local-qwen-ollama.png
+│       └── rag-final-answer.png
 ├── data/
 │   └── documents/
 │       └── .gitkeep
@@ -68,9 +97,9 @@ simple-rag-llm-document-reading-information-retrieval/
 
 PDF files are ignored by Git by default so private documents are not accidentally committed.
 
-## How RAG works in this project
+## How RAG Works in This Project
 
-### 1. Document ingestion
+### 1. Document Ingestion
 
 PyMuPDF opens the PDF and extracts the text page by page.
 
@@ -106,7 +135,7 @@ BAAI/bge-small-en-v1.5
 
 The vectors are normalized so inner-product search can be used as cosine-style semantic similarity.
 
-### 4. Vector retrieval
+### 4. Vector Retrieval
 
 FAISS stores all chunk embeddings.
 
@@ -124,14 +153,14 @@ The prompt explicitly asks the model to use only the retrieved context and to sa
 
 ## Installation
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/simple-rag-llm-document-reading-information-retrieval.git
+git clone https://github.com/Tamerlafiatt/simple-rag-llm-document-reading-information-retrieval.git
 cd simple-rag-llm-document-reading-information-retrieval
 ```
 
-### 2. Create a virtual environment
+### 2. Create a Virtual Environment
 
 Windows:
 
@@ -147,7 +176,7 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install Python dependencies
+### 3. Install Python Dependencies
 
 ```bash
 python -m pip install --upgrade pip
@@ -162,13 +191,13 @@ Install Ollama, then download the local model:
 ollama pull qwen3:4b
 ```
 
-You can test it with:
+Test it with:
 
 ```bash
 ollama run qwen3:4b
 ```
 
-## Run the project
+## Run the Project
 
 Place a PDF at:
 
@@ -210,14 +239,14 @@ for source in result["sources"]:
 Example output:
 
 ```text
-The document uses ...
+The document uses the LANL 2017 Unified Host and Network Dataset.
 
 Sources:
 - document.pdf, page 7
 - document.pdf, page 8
 ```
 
-## Retrieval function
+## Retrieval Function
 
 The core retriever performs:
 
@@ -233,50 +262,50 @@ top-k relevant chunks
 
 The retrieval score is a similarity score, **not a probability or model confidence score**.
 
-## Why use a local LLM?
+## Why Use a Local LLM?
 
 Using Ollama allows the generation step to run locally.
 
 Benefits include:
 
-- no LLM API key required
-- local/private inference
-- easier experimentation with open models
-- useful foundation for offline document assistants
+- No LLM API key required
+- Local/private inference
+- Easier experimentation with open models
+- Useful foundation for offline document assistants
 
 The first download of the embedding model and Qwen model still requires internet access.
 
-## Current limitations
+## Current Limitations
 
 This is intentionally a simple learning implementation.
 
 Current limitations include:
 
-- one PDF at a time
-- in-memory FAISS index
-- no reranker
-- no formal RAG evaluation
-- no hybrid lexical + semantic search
-- no persistent vector database
-- no web UI
-- retrieved chunks are supplied directly to the LLM without advanced context compression
+- One PDF at a time
+- In-memory FAISS index
+- No reranker
+- No formal RAG evaluation
+- No hybrid lexical + semantic search
+- No persistent vector database
+- No web UI
+- Retrieved chunks are supplied directly to the LLM without advanced context compression
 
-## Possible next steps
+## Possible Next Steps
 
-- multi-document ingestion
-- persistent FAISS or Qdrant storage
-- metadata filtering
-- reranking
+- Multi-document ingestion
+- Persistent FAISS or Qdrant storage
+- Metadata filtering
+- Reranking
 - RAGAS evaluation
-- citation validation
+- Citation validation
 - FastAPI backend
 - Streamlit or React interface
 - LangGraph / agentic RAG
-- query rewriting and retrieval retry
-- hybrid BM25 + vector retrieval
+- Query rewriting and retrieval retry
+- Hybrid BM25 + vector retrieval
 
 ## Goal
 
 The goal of this repository is to understand the mechanics of RAG from first principles:
 
-**retrieve relevant information first, then let the LLM generate an answer from that evidence.**
+**Retrieve relevant information first, then let the LLM generate an answer from that evidence.**
